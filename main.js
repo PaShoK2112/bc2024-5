@@ -75,6 +75,10 @@ lab5.post('/write', mlt.none(), (req, res) => {
     });
 });
 
+lab5.get('/UploadForm.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'UploadForm.html'));
+});
+
 
 lab5.listen(options.port, options.host, () => {
   console.log(`Server running at http://${options.host}:${options.port}`);
