@@ -62,6 +62,20 @@ lab5.get('/notes', (req, res) => {
     });
 });
 
+lab5.post('/write', mlt.none(), (req, res) => {
+    const path_to_note = path.join(options.cache, `${req.body.note_name}.txt`);
+    fs.access(path_to_note, fs.constants.F_OK, (err) => {
+      if (!err) {
+        return res.status(400).send('Bad request');
+      }
+      fs.writeFile(path_to_note, req.body.note, (err) => {
+        if (err) throw err;
+        res.status(201).send('Created');
+      });
+    });
+});
+
+
 lab5.listen(options.port, options.host, () => {
   console.log(`Server running at http://${options.host}:${options.port}`);
 });
