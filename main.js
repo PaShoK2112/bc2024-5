@@ -3,6 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const {program} = require('commander');
 const multer = require('multer');
+const bodyParser = require("body-parser");
 
 const mlt = multer();
 
@@ -16,6 +17,8 @@ program.parse(process.argv);
 const options = program.opts();
 const lab5 = express();
 lab5.use(express.json());
+lab5.use(bodyParser.raw({ type: "text/plain" }));
+
 
 
 lab5.get('/notes/:note_name', (req, res) => {
@@ -29,16 +32,21 @@ lab5.get('/notes/:note_name', (req, res) => {
 });
 
 lab5.put('/notes/:note_name', (req, res) => {
-    const path_to_note = path.join(options.cache, `${req.params.note_name}.txt`);
-    fs.access(path_to_note, fs.constants.F_OK, (err) => {
+  const noteName = req.params.note_name.trim(); 
+  const path_to_note = path.join(options.cache, `${noteName}.txt`);
+
+  fs.access(path_to_note, fs.constants.F_OK, (err) => {
       if (err) {
-        return res.status(404).send('Not found');
+          return res.status(404).send('Not found');
       }
-      fs.writeFile(path_to_note, req.body.text, (err) => {
-        if (err) throw err;
-        res.send('Updated');
+      fs.writeFile(path_to_note, req.body.toString(), (err) => {
+          if (err) {
+              console.error(err);
+              return res.status(500).send('Internal Server Error');
+          }
+          res.send('Updated');
       });
-    });
+  });
 });
 
 lab5.delete('/notes/:note_name', (req, res) => {

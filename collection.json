@@ -74,6 +74,14 @@
 				"url": "http://localhost:8080/write"
 			},
 			"response": []
+		},
+		{
+			"name": "upload form",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
 		}
 	]
 }
